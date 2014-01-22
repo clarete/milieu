@@ -2,6 +2,7 @@
 # milieu - Environment variables manager
 #
 # Copyright (c) 2013  Yipit, Inc <coders@yipit.com>
+# Copyright (c) 2013-2014  Lincoln Clarete <lincoln@clarete.li>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,8 +19,35 @@
 
 from __future__ import unicode_literals
 from setuptools import setup, find_packages
+
+import ast
 import os
 import re
+
+
+PACKAGE = 'milieu'
+
+
+class VersionFinder(ast.NodeVisitor):
+    """Reads the value of the  variable __version__ of an AST tree.
+
+    Take a look in the `read_version()` function below. It uses this
+    class with the parsed AST tree from PACKAGE/version.py instead of
+    trying to read that dynamically.
+    """
+    def __init__(self):
+        self.version = None
+
+    def visit_Assign(self, node):
+        if node.targets[0].id == '__version__':
+            self.version = node.value.s
+
+
+def read_version():
+    """Read version from package/version.py without loading any files"""
+    finder = VersionFinder()
+    finder.visit(ast.parse(local_file(PACKAGE, 'version.py')))
+    return finder.version
 
 
 def parse_requirements():
@@ -50,8 +78,8 @@ def parse_requirements():
     return pkgs, links
 
 
-local_file = lambda f: \
-    open(os.path.join(os.path.dirname(__file__), f)).read()
+local_file = lambda *f: \
+    open(os.path.join(os.path.dirname(__file__), *f)).read()
 
 
 install_requires, dependency_links = parse_requirements()
@@ -59,14 +87,14 @@ install_requires, dependency_links = parse_requirements()
 
 if __name__ == '__main__':
     setup(
-        name='milieu',
-        version='0.1.3',
+        name=PACKAGE,
+        version=read_version(),
         description=(
             "A helping hand to manage your settings among "
             "different environments"),
         long_description=local_file('README.md'),
         author=u'Lincoln de Sousa',
-        author_email=u'lincoln@yipit.com',
+        author_email=u'lincoln@clarete.li',
         url='https://github.com/Yipit/milieu',
         packages=find_packages(exclude=['*tests*']),
         install_requires=install_requires,

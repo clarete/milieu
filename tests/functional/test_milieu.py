@@ -2,6 +2,7 @@
 # milieu - Environment variables manager
 #
 # Copyright (c) 2013  Yipit, Inc <coders@yipit.com>
+# Copyright (c) 2013-2014  Lincoln Clarete <lincoln@clarete.li>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
