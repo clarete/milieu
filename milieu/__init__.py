@@ -25,6 +25,7 @@ import yaml
 
 
 class FolderStorage(dict):
+
     def __init__(self, path):
         # We won't do anything before making sure it's a folder
         if not os.path.isdir(path):
@@ -71,6 +72,14 @@ class Environment(object):
     @classmethod
     def from_folder(cls, path):
         return cls(storage=FolderStorage(path))
+
+    def update(self, other_environment):
+        # We're not using the `dict.update()` method here because it
+        # doesn't actually call the `set` method, which is what
+        # actually writes to the disc in the `FolderStorage` for
+        # example.
+        for key, value in other_environment.items():
+            self.storage[key] = value
 
     def __delitem__(self, name):
         del self.storage[name]

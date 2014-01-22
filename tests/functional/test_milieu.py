@@ -79,3 +79,35 @@ def test_milieu_environment_from_directory_set():
     # And then I see that after removing the item, the file will also go away
     del env['CITY']
     os.path.exists(target).should.be.false
+
+
+def test_merge_folder_environment():
+    "Environment.update() Should update a folder based environment with data from another one"
+
+    # Given that I load variables to my env from a folder
+    path = os.path.join(os.path.dirname(__file__), './fixtures/env')
+    environment = Environment.from_folder(path)
+
+    # When I merge another environment into the current one that *does
+    # not* have the variable CITY
+    environment.update(Environment(storage={'CITY': 'Porto Alegre'}))
+
+    # Then I see that the old value was overwritten
+    environment.get('CITY').should.equal('Porto Alegre')
+
+    # And then I just cleanup the file I created above
+    del environment['CITY']
+
+
+def test_merge_regular_environment():
+    "Environment.update() Should update a regular environment with data from another one"
+
+    # Given that I load variables to my env from a folder
+    environment = Environment()
+
+    # When I merge another environment into the current one that *does
+    # not* have the variable CITY
+    environment.update(Environment(storage={'CITY': 'Porto Alegre'}))
+
+    # Then I see that the old value was overwritten
+    environment.get('CITY').should.equal('Porto Alegre')

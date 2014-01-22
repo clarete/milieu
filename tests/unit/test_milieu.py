@@ -211,3 +211,31 @@ def test_milieu_environment_from_directory_del(_os, _io):
 
     # Then I can see that the unlink function was called properly
     _os.unlink.assert_called_once_with('./path/CITY')
+
+
+@patch('milieu.os.path.isdir')
+def test_folder_storage_with_not_existing_paths(isdir):
+    "FolderStorage() Should not work if its path doesn't point to an existing folder"
+
+    # Given that `isdir` will certainly return false
+    isdir.return_value = False
+
+    # When I call the `.from_folder()` method, it should raise the
+    # right exception
+    Environment.from_folder.when.called_with(
+        '/dev/p0wned!11').should.throw(
+            OSError, 'The path `/dev/p0wned!11` does not exist')
+
+
+def test_merge_regular_environment():
+    "Environment.update() Should update a regular environment with data from another one"
+
+    # Given that I load variables to my env from a folder
+    environment = Environment()
+
+    # When I merge another environment into the current one that *does
+    # not* have the variable CITY
+    environment.update(Environment(storage={'CITY': 'Porto Alegre'}))
+
+    # Then I see that the old value was overwritten
+    environment.get('CITY').should.equal('Porto Alegre')
