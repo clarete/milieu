@@ -79,7 +79,7 @@ class Environment(object):
         # actually writes to the disc in the `FolderStorage` for
         # example.
         for key, value in other_environment.items():
-            self.storage[key] = value
+            self.storage[key] = str(value)
 
     def __delitem__(self, name):
         del self.storage[name]

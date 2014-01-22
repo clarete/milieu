@@ -239,3 +239,20 @@ def test_merge_regular_environment():
 
     # Then I see that the old value was overwritten
     environment.get('CITY').should.equal('Porto Alegre')
+
+
+def test_merge_regular_environment_with_non_string_values():
+    "Environment.update() Should convert all the values before setting them back to the original environment"
+
+    # Given that I load variables to my env from a folder
+    environment = Environment()
+
+    # When I merge another environment into the current one that *does
+    # not* have the variable `age`, I set it as an integer
+    environment.update(Environment(storage={'age': 27}))
+
+    # Then I see that the value was converted to a string
+    environment.get('age').should.equal('27')
+
+    # And then I see it's not a unicode string, but a bytes sequence
+    environment.get('age').should.be.a(bytes)
