@@ -66,8 +66,12 @@ class Environment(object):
         self.storage.update(base or {})
 
     @classmethod
+    def from_file_object(cls, file_like):
+        return cls(storage=yaml.load(file_like))
+
+    @classmethod
     def from_file(cls, path):
-        return cls(storage=yaml.load(io.open(path)))
+        return cls.from_file_object(io.open(path))
 
     @classmethod
     def from_folder(cls, path):

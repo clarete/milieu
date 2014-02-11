@@ -124,6 +124,19 @@ def test_milieu_helper_methods():
     env.get_bool('i-dont-exist', True).should.be.true
 
 
+def test_milieu_environment_from_file_object():
+    "Environment.from_file_object() Should load variables form file-like objects"
+
+    # Given a file-like object with a variable inside
+    file_like = io.StringIO('FAVORITE_SUPER_HERO: Batman!')
+
+    # When I create a new environment from that object
+    env = Environment.from_file_object(file_like)
+
+    # then I see that it contains the variable
+    env.get('FAVORITE_SUPER_HERO').should.equal('Batman!')
+
+
 @patch('milieu.io')
 def test_milieu_environment_from_file(_io):
     # Given that I load variables to my environment from a file
