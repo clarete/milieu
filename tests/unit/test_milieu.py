@@ -209,6 +209,20 @@ def test_milieu_environment_from_directory_set(_io):
 
 
 @patch('milieu.io')
+@patch('milieu.os.path.isdir', lambda *a: True)
+def test_milieu_environment_from_directory_update(_io):
+    # Given that I load variables to my env from a folder
+    env = Environment.from_folder(
+        os.path.join(os.path.dirname(__file__), './fixtures/env'))
+
+    # When I set some stuff
+    env.update({'fruit': 'açai'})
+
+    # Then I see that we always try to write the file
+    _io.open.return_value.write.assert_called_once_with('açai')
+
+
+@patch('milieu.io')
 @patch('milieu.os')
 def test_milieu_environment_from_directory_del(_os, _io):
     # Given that I have a folder environment with an item `CITY`

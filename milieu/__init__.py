@@ -58,10 +58,30 @@ class FolderStorage(dict):
     def items(self):
         return [(i, self.get(i)) for i in os.listdir(self.path)]
 
+    def update(self, other):
+        # We're not using the `dict.update()` method here because it
+        # doesn't actually call the `set` method, which is what
+        # actually writes to the disc in the `FolderStorage` for
+        # example.
+        for key, value in other.items():
+            self[key] = value
+
+
+class EnvironmentStorage(os.environ.__class__):
+
+    def __init__(self):
+        os.environ.__class__.__init__(self, os.environ)
+
+    def update(self, other):
+        # We're saving to the environment, it won't accept anything
+        # but strings.
+        for key, value in other.items():
+            os.environ[key] = str(value)
+
 
 class Environment(object):
 
-    def __init__(self, base=None, storage=os.environ):
+    def __init__(self, base=None, storage=EnvironmentStorage()):
         self.storage = storage
         self.storage.update(base or {})
 
@@ -77,13 +97,8 @@ class Environment(object):
     def from_folder(cls, path):
         return cls(storage=FolderStorage(path))
 
-    def update(self, other_environment):
-        # We're not using the `dict.update()` method here because it
-        # doesn't actually call the `set` method, which is what
-        # actually writes to the disc in the `FolderStorage` for
-        # example.
-        for key, value in other_environment.items():
-            self.storage[key] = str(value)
+    def update(self, other):
+        self.storage.update(other)
 
     def __delitem__(self, name):
         del self.storage[name]
