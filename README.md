@@ -3,16 +3,8 @@ A helping hand to manage your settings among different environments
 ## Intro
 
 Managing application configuration that runs on multiple environments
-can be tough. So, **milieu** comes to help you pretend you have only one
-settings file that magically works whenever you deploy.
-
-Here at Yipit, we use Chef to coordinate the deploy process and to maintain the
-configuration, using attributes or data bags.
-
-After that, we use [envdir](http://cr.yp.to/daemontools/envdir.html)
-to run our applications with variables set in Chef. Then, we use
-**milieu** to read those variables and feed the application configuration
-system.
+can be tough. So **milieu** comes to help you pretend you have only
+one settings file that magically works whenever you deploy.
 
 ## Production
 
@@ -29,7 +21,6 @@ $ export DATABASE_URI=mysql://root@localhost:3306/mydb
 The application settings glue code will look like this:
 
 ```python
-# steadymark:ignore
 >>> from milieu import Environment
 >>> env = Environment()
 >>> dburi = env.get_uri('DATABASE_URI')
@@ -45,7 +36,6 @@ If you just want to load things from a file locally, the
 `Environment.from_file()` constructor will help you out.
 
 ```python
-# steadymark:ignore
 >>> from milieu import Environment
 >>> env = Environment.from_file('/etc/app.cfg')
 >>> env.get_bool('BOOL_FLAG')
@@ -65,18 +55,18 @@ FLOAT_VAL: 3.14
 ## From a folder
 
 You can also load variables from a folder, where each file will be an
-environment variable and the file's content will be the value. Just like
-[envdir](http://cr.yp.to/daemontools/envdir.html).
+environment variable and the file's content will be the value. Just
+like [envdir](http://cr.yp.to/daemontools/envdir.html).
 
-Now, say that you have the folder `/etc/envdir/app` and this folder contains
-the file `MYSQL_CONN_URI` with a database URL inside of it. Just like this one
-here: `mysql://root:secret@localhost:3306/mydb`.
+Now, say that you have the folder `/etc/envdir/app` and this folder
+contains the file `MYSQL_CONN_URI` with a database URL inside of
+it. Just like this one here:
+`mysql://root:secret@localhost:3306/mydb`.
 
-To read that directory and load the variable properly, you just have to do the
-following:
+To read that directory and load the variable properly, you just have
+to do the following:
 
 ```python
-# steadymark:ignore
 >>> from milieu import Environment
 >>> env = Environment.from_folder('/etc/envdir/app')
 >>> uri = env.get_uri('MYSQL_CONN_URI')
@@ -106,7 +96,8 @@ make test
 
 ## Change it
 
-Make sure you write tests for your new features and keep the test coverage in 100%
+Make sure you write tests for your new features and keep the test
+coverage in 100%
 
 ## Release it
 
@@ -116,4 +107,5 @@ After you already made your commits, run:
 make release
 ```
 
-follow the instructions and do the [harlem shake](http://www.youtube.com/watch?v=8vJiSSAMNWw)
+follow the instructions and do the
+[harlem shake](http://www.youtube.com/watch?v=8vJiSSAMNWw)
